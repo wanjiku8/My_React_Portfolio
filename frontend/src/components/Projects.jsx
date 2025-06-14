@@ -1,11 +1,21 @@
 import { useState, useEffect } from 'react';
-import { ExternalLink, Github, Code2 } from 'lucide-react';
-import AssetOne from '../assets/asset-one.png';
+import { ExternalLink, Github, Code2, ChevronLeft, ChevronRight } from 'lucide-react';
+import AssetOne from '../assets/one (1).jpg';
+import ShoppingList from '../assets/one (2).jpg';
+import Light from '../assets/one (3).jpg';
+import Game from '../assets/one (4).jpg';
+import ProjectFive from '../assets/one (5).jpg';
+import ProjectSix from '../assets/one (6).jpg';
+import ProjectSeven from '../assets/one (7).jpg';
+import ProjectEight from '../assets/one (8).jpg';
+import ProjectNine from '../assets/one (9).jpg';
 
 const Projects = () => {
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== 'undefined' ? window.innerWidth : 1024
   );
+  const [currentPage, setCurrentPage] = useState(1);
+  const projectsPerPage = 6; // Show 6 projects per page (2 rows of 3)
 
   useEffect(() => {
     const handleResize = () => {
@@ -16,46 +26,100 @@ const Projects = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const projects = [
+const projects = [
+  {
+    title: 'E-Commerce Platform',
+    description: 'FarmStore e-commerce site with product listings, cart functionality, and secure checkout. Built with WordPress and WooCommerce for seamless online shopping.',
+    image: AssetOne,
+    technologies: ['PHP', 'Wordpress', 'MySQL', 'WooCommerce'],
+    liveUrl: 'http://farmstore.co.ke/',
+    githubUrl: '#',
+    featured: true
+  },
     {
-    
-  title: 'E-Commerce Platform',
-  description: 'A full-featured e-commerce platform built with React, Node.js, and PostgreSQL. Features include user authentication, payment processing, inventory management, and admin dashboard.',
-  image: AssetOne,
-  technologies: ['PHP', 'Wordpress', 'MySQL', 'WooCommerce'],
-  liveUrl: 'http://farmstore.co.ke/',
-  githubUrl: '#',
-  featured: true
-}
-,
-    {
-      title: 'Task Management App',
-      description: 'A collaborative task management application with real-time updates, drag-and-drop functionality, and team collaboration features.',
-      image: 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?auto=format&fit=crop&w=800&q=80',
-      technologies: ['React', 'Socket.io', 'Express', 'MongoDB'],
-      liveUrl: '#',
-      githubUrl: '#',
-      featured: true
-    },
-    {
-      title: 'Weather Dashboard',
-      description: 'A responsive weather dashboard that displays current weather conditions and forecasts using external APIs with beautiful data visualizations.',
-      image: 'https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?auto=format&fit=crop&w=800&q=80',
-      technologies: ['React', 'Chart.js', 'Weather API', 'CSS'],
-      liveUrl: '#',
-      githubUrl: '#',
-      featured: false
-    },
-    {
-      title: 'Blog CMS',
-      description: 'A content management system for blogs with markdown support, SEO optimization, and a clean admin interface.',
-      image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=800&q=80',
-      technologies: ['React', 'Node.js', 'PostgreSQL', 'Auth'],
-      liveUrl: '#',
-      githubUrl: '#',
-      featured: false
-    }
-  ];
+    title: 'GARLAND Designs & Interiors',
+    description: 'Event planning company website showcasing services. Features gallery, contact form, and service information.',
+    image: ProjectNine,
+    technologies: ['Html', 'js', 'Css'],
+    liveUrl: 'https://repeat-nu.vercel.app/',
+    githubUrl: '#',
+    featured: false
+  },
+      {
+    title: 'Alumni Management System',
+    description: 'Platform connecting alumni members worldwide. Enables networking, event management, and career opportunities.',
+    image: ProjectSix,
+    technologies: ['JavaScript', 'API Integration', 'CSS'],
+    liveUrl: 'https://wanjiku8.github.io/ALU/',
+    githubUrl: '#',
+    featured: false
+  },
+  {
+    title: 'Shopping List App',
+    description: 'Interactive shopping list application with item management. Features include adding, removing, and marking items as completed.',
+    image: ShoppingList,
+    technologies: ['React','Python', 'Flask'],
+    liveUrl: 'https://wanjiku8.github.io/Wk2-Code-Challenge/',
+    githubUrl: '#',
+    featured: true
+  },
+
+  {
+    title: 'Website-Light-OFF-ON',
+    description: 'Interactive light switch demo showcasing DOM manipulation. Toggle between light and dark modes with a simple button click.',
+    image: Light,
+    technologies: ['React', 'Chart.js', 'Weather API', 'CSS'],
+    liveUrl: 'https://wanjiku8.github.io/Website-Light-OFF-ON/',
+    githubUrl: '#',
+    featured: false
+  },
+  {
+    title: 'Begginer-HTML-CSS-JS-GAME',
+    description: 'Simple browser-based game demonstrating core web technologies. Features basic interactivity and score tracking.',
+    image: Game,
+    technologies: ['React', 'Node.js', 'PostgreSQL', 'Auth'],
+    liveUrl: 'https://wanjiku8.github.io/Begginer-HTML-CSS-JS-GAME/',
+    githubUrl: '#',
+    featured: false
+  },
+  {
+    title: 'Portfolio Website',
+    description: 'Personal portfolio showcasing projects and skills. Responsive design with smooth animations and dark mode support.',
+    image: ProjectFive,
+    technologies: ['React', 'CSS', ],
+    liveUrl: 'https://wanjiku8.github.io/Portfolio-Wanjiku-Faith/',
+    githubUrl: '#',
+    featured: true
+  },
+
+  {
+    title: 'The Animal Soundboard',
+    description: 'Interactive soundboard featuring animal noises. Educational tool for children with colorful UI and simple controls.',
+    image: ProjectSeven,
+    technologies: ['React', 'Flask'],
+    liveUrl: 'https://wanjiku8.github.io/Final-Project/',
+    githubUrl: '#',
+    featured: true
+  },
+  {
+    title: 'Movie js Application',
+    description: 'Movie database browser with search functionality. Displays film details and ratings from a curated collection.',
+    image: ProjectEight,
+    technologies: ['js', 'Html5/Css', 'Bootstrap'],
+    liveUrl: 'https://wanjiku8.github.io/mv/',
+    githubUrl: '#',
+    featured: false
+  }
+
+];
+
+  // Calculate pagination
+  const indexOfLastProject = currentPage * projectsPerPage;
+  const indexOfFirstProject = indexOfLastProject - projectsPerPage;
+  const currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
+  const totalPages = Math.ceil(projects.length / projectsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Responsive styles
   const sectionStyle = {
@@ -94,7 +158,7 @@ const Projects = () => {
 
   const gridStyle = {
     display: 'grid',
-    gridTemplateColumns: windowWidth < 768 ? '1fr' : windowWidth < 1024 ? '1fr 1fr' : '1fr 1fr',
+    gridTemplateColumns: windowWidth < 768 ? '1fr' : windowWidth < 1024 ? '1fr 1fr' : '1fr 1fr 1fr',
     gap: windowWidth < 768 ? '1.5rem' : '2rem'
   };
 
@@ -109,8 +173,8 @@ const Projects = () => {
 
   const imageContainerStyle = {
     position: 'relative',
-    // overflow: 'hidden',
-    height: windowWidth < 768 ? '10rem' : '12rem'
+    overflow: 'hidden',
+    height: windowWidth < 768 ? '12rem' : '20rem'
   };
 
   const imageStyle = {
@@ -198,20 +262,33 @@ const Projects = () => {
     width: windowWidth < 480 ? '100%' : 'auto'
   };
 
-  const viewAllButtonStyle = {
-    backgroundColor: '#8B4513',
-    color: 'white',
-    padding: windowWidth < 768 ? '0.6rem 1.2rem' : '0.75rem 1.5rem',
-    borderRadius: '0.375rem',
-    border: 'none',
-    fontSize: windowWidth < 768 ? '0.9rem' : '1rem',
-    fontWeight: '500',
-    cursor: 'pointer',
+  const paginationStyle = {
     display: 'flex',
+    justifyContent: 'center',
     alignItems: 'center',
     gap: '0.5rem',
-    margin: '0 auto',
-    marginTop: windowWidth < 768 ? '2rem' : '3rem'
+    marginTop: '3rem'
+  };
+
+  const pageButtonStyle = {
+    padding: '0.5rem 1rem',
+    backgroundColor: '#8B4513',
+    color: 'white',
+    border: 'none',
+    borderRadius: '0.25rem',
+    cursor: 'pointer',
+    fontSize: '0.875rem'
+  };
+
+  const activePageButtonStyle = {
+    ...pageButtonStyle,
+    backgroundColor: '#5a2d0c'
+  };
+
+  const disabledPageButtonStyle = {
+    ...pageButtonStyle,
+    backgroundColor: '#d3d3d3',
+    cursor: 'not-allowed'
   };
 
   return (
@@ -225,7 +302,7 @@ const Projects = () => {
         </div>
 
         <div style={gridStyle}>
-          {projects.map((project, index) => (
+          {currentProjects.map((project, index) => (
             <div 
               key={index} 
               style={cardStyle}
@@ -259,12 +336,12 @@ const Projects = () => {
                   style={imageStyle}
                 />
                 <div className="overlay" style={overlayStyle}>
-                  <button style={buttonStyle}>
+                  <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" style={buttonStyle}>
                     <ExternalLink size={16} />
-                  </button>
-                  <button style={buttonStyle}>
+                  </a>
+                  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" style={buttonStyle}>
                     <Github size={16} />
-                  </button>
+                  </a>
                 </div>
               </div>
               
@@ -287,19 +364,19 @@ const Projects = () => {
                 <p style={descriptionStyle}>{project.description}</p>
                 
                 <div style={techContainerStyle}>
-                  {project.technologies.map((tech) => (
-                    <span key={tech} style={techBadgeStyle}>
+                  {project.technologies.map((tech, techIndex) => (
+                    <span key={techIndex} style={techBadgeStyle}>
                       {tech}
                     </span>
                   ))}
                 </div>
                 
                 <div style={footerStyle}>
-                  <a href={project.liveUrl} style={linkButtonStyle}>
+                  <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" style={linkButtonStyle}>
                     <ExternalLink size={windowWidth < 768 ? 14 : 16} />
                     Live Demo
                   </a>
-                  <a href={project.githubUrl} style={linkButtonStyle}>
+                  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" style={linkButtonStyle}>
                     <Github size={windowWidth < 768 ? 14 : 16} />
                     Source Code
                   </a>
@@ -309,10 +386,31 @@ const Projects = () => {
           ))}
         </div>
 
-        <div style={{ textAlign: 'center' }}>
-          <button style={viewAllButtonStyle}>
-            <Code2 size={windowWidth < 768 ? 18 : 20} />
-            View All Projects
+        <div style={paginationStyle}>
+          <button 
+            onClick={() => paginate(currentPage - 1)} 
+            disabled={currentPage === 1}
+            style={currentPage === 1 ? disabledPageButtonStyle : pageButtonStyle}
+          >
+            <ChevronLeft size={18} />
+          </button>
+          
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+            <button
+              key={number}
+              onClick={() => paginate(number)}
+              style={number === currentPage ? activePageButtonStyle : pageButtonStyle}
+            >
+              {number}
+            </button>
+          ))}
+          
+          <button 
+            onClick={() => paginate(currentPage + 1)} 
+            disabled={currentPage === totalPages}
+            style={currentPage === totalPages ? disabledPageButtonStyle : pageButtonStyle}
+          >
+            <ChevronRight size={18} />
           </button>
         </div>
       </div>
