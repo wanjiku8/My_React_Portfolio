@@ -391,7 +391,7 @@ const Hero = () => {
             </p>
 
             <div style={techStackStyle}>
-              {['React', 'TypeScript', 'Python', 'Flask', 'Node.js'].map((tech) => (
+              {['React', 'JavaScript', 'Python', 'Flask', 'Node.js'].map((tech) => (
                 <span key={tech} style={techPillStyle}>
                   {tech}
                 </span>
@@ -415,10 +415,10 @@ const Hero = () => {
             <div style={cardStyle}>
               <div style={codeBlockStyle}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                  <div style={{ width: '0.75rem', height: '0.75rem', borderRadius: '50%', backgroundColor: 'black' }}></div>
                   <div style={{ width: '0.75rem', height: '0.75rem', borderRadius: '50%', backgroundColor: 'white' }}></div>
                   <div style={{ width: '0.75rem', height: '0.75rem', borderRadius: '50%', backgroundColor: 'orange' }}></div>
-                  <span style={{ fontSize: '0.875rem', color: '#9ca3af', marginLeft: '0.5rem' }}>portfolio.js</span>
+                  <div style={{ width: '0.75rem', height: '0.75rem', borderRadius: '50%', backgroundColor: 'white' }}></div>
+                  <span style={{ fontSize: '0.875rem', color: '#9ca3af', marginLeft: '0.5rem' }}>Portfolio.js</span>
                 </div>
                 <pre style={{ 
                   fontSize: windowWidth > 768 ? '0.875rem' : '0.75rem', 
@@ -430,14 +430,14 @@ const Hero = () => {
 {`const developer = {
   name: "Faith Wanjiku",
   role: "Fullstack Developer",
-  passion: "Creating amazing UX",
+  passion: "Code with purpose",
   
   skills: [
     "React", "Python", 
     "Flask", "JavaScript"
   ],
   
-  motto: "Code with purpose"
+  motto: "Design • Build • Improve"
 };
 
 console.log(developer.motto);`}

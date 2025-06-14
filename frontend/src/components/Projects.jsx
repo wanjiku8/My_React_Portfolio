@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ExternalLink, Github, Code2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import AssetOne from '../assets/one (1).jpg';
 import ShoppingList from '../assets/one (2).jpg';
 import Light from '../assets/one (3).jpg';
@@ -9,13 +9,14 @@ import ProjectSix from '../assets/one (6).jpg';
 import ProjectSeven from '../assets/one (7).jpg';
 import ProjectEight from '../assets/one (8).jpg';
 import ProjectNine from '../assets/one (9).jpg';
+import ProjectTen from '../assets/one (10).jpg';
 
 const Projects = () => {
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== 'undefined' ? window.innerWidth : 1024
   );
   const [currentPage, setCurrentPage] = useState(1);
-  const projectsPerPage = 6; // Show 6 projects per page (2 rows of 3)
+  const projectsPerPage = 6;
 
   useEffect(() => {
     const handleResize = () => {
@@ -26,92 +27,95 @@ const Projects = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-const projects = [
-  {
-    title: 'E-Commerce Platform',
-    description: 'FarmStore e-commerce site with product listings, cart functionality, and secure checkout. Built with WordPress and WooCommerce for seamless online shopping.',
-    image: AssetOne,
-    technologies: ['PHP', 'Wordpress', 'MySQL', 'WooCommerce'],
-    liveUrl: 'http://farmstore.co.ke/',
-    githubUrl: '#',
-    featured: true
-  },
+  const projects = [
     {
-    title: 'GARLAND Designs & Interiors',
-    description: 'Event planning company website showcasing services. Features gallery, contact form, and service information.',
-    image: ProjectNine,
-    technologies: ['Html', 'js', 'Css'],
-    liveUrl: 'https://repeat-nu.vercel.app/',
-    githubUrl: '#',
-    featured: false
-  },
-      {
-    title: 'Alumni Management System',
-    description: 'Platform connecting alumni members worldwide. Enables networking, event management, and career opportunities.',
-    image: ProjectSix,
-    technologies: ['JavaScript', 'API Integration', 'CSS'],
-    liveUrl: 'https://wanjiku8.github.io/ALU/',
-    githubUrl: '#',
-    featured: false
-  },
-  {
-    title: 'Shopping List App',
-    description: 'Interactive shopping list application with item management. Features include adding, removing, and marking items as completed.',
-    image: ShoppingList,
-    technologies: ['React','Python', 'Flask'],
-    liveUrl: 'https://wanjiku8.github.io/Wk2-Code-Challenge/',
-    githubUrl: '#',
-    featured: true
-  },
+      title: 'E-Commerce Platform',
+      description: 'FarmStore e-commerce site with product listings, cart functionality, and secure checkout. Built with WordPress and WooCommerce for seamless online shopping.',
+      image: AssetOne,
+      technologies: ['PHP', 'Wordpress', 'MySQL', 'WooCommerce'],
+      liveUrl: 'http://farmstore.co.ke/',
+      featured: true
+    },
 
-  {
-    title: 'Website-Light-OFF-ON',
-    description: 'Interactive light switch demo showcasing DOM manipulation. Toggle between light and dark modes with a simple button click.',
-    image: Light,
-    technologies: ['React', 'Chart.js', 'Weather API', 'CSS'],
-    liveUrl: 'https://wanjiku8.github.io/Website-Light-OFF-ON/',
-    githubUrl: '#',
+    {
+    title: 'Spacer Platform',
+    description: 'Spacer connects you with unique venues available for rent by the hour or day – perfect for your next event, project, or celebration',
+    image: ProjectTen,
+    technologies: [
+      'React & Redux Toolkit',
+      'Python (Flask)',
+      'PostgreSQL',
+      'Figma',
+    ],
+    liveUrl: 'https://spacer-platform-1.onrender.com/',
     featured: false
   },
-  {
-    title: 'Begginer-HTML-CSS-JS-GAME',
-    description: 'Simple browser-based game demonstrating core web technologies. Features basic interactivity and score tracking.',
-    image: Game,
-    technologies: ['React', 'Node.js', 'PostgreSQL', 'Auth'],
-    liveUrl: 'https://wanjiku8.github.io/Begginer-HTML-CSS-JS-GAME/',
-    githubUrl: '#',
-    featured: false
-  },
-  {
-    title: 'Portfolio Website',
-    description: 'Personal portfolio showcasing projects and skills. Responsive design with smooth animations and dark mode support.',
-    image: ProjectFive,
-    technologies: ['React', 'CSS', ],
-    liveUrl: 'https://wanjiku8.github.io/Portfolio-Wanjiku-Faith/',
-    githubUrl: '#',
-    featured: true
-  },
-
-  {
-    title: 'The Animal Soundboard',
-    description: 'Interactive soundboard featuring animal noises. Educational tool for children with colorful UI and simple controls.',
-    image: ProjectSeven,
-    technologies: ['React', 'Flask'],
-    liveUrl: 'https://wanjiku8.github.io/Final-Project/',
-    githubUrl: '#',
-    featured: true
-  },
-  {
-    title: 'Movie js Application',
-    description: 'Movie database browser with search functionality. Displays film details and ratings from a curated collection.',
-    image: ProjectEight,
-    technologies: ['js', 'Html5/Css', 'Bootstrap'],
-    liveUrl: 'https://wanjiku8.github.io/mv/',
-    githubUrl: '#',
-    featured: false
-  }
-
-];
+   
+    {
+      title: 'Alumni Management System',
+      description: 'Platform connecting alumni members worldwide. Enables networking, event management, and career opportunities.',
+      image: ProjectSix,
+      technologies: ['JavaScript','CSS', 'HTML'],
+      liveUrl: 'https://wanjiku8.github.io/ALU/',
+      featured: false
+    },
+     {
+      title: 'GARLAND Designs & Interiors',
+      description: 'Event planning company website showcasing services. Features gallery, contact form, and service information.',
+      image: ProjectNine,
+      technologies: ['Html', 'js', 'Css'],
+      liveUrl: 'https://repeat-nu.vercel.app/',
+      featured: false
+    },
+    {
+      title: 'Shopping List App',
+      description: 'Interactive shopping list application with item management. Features include adding, removing, and marking items as completed.',
+      image: ShoppingList,
+      technologies: ['React','Python', 'Flask'],
+      liveUrl: 'https://wanjiku8.github.io/Wk2-Code-Challenge/',
+      featured: true
+    },
+    {
+      title: 'Website-Light-OFF-ON',
+      description: 'Interactive light switch demo showcasing DOM manipulation. Toggle between light and dark modes with a simple button click.',
+      image: Light,
+      technologies: ['js', 'HTML', 'CSS'],
+      liveUrl: 'https://wanjiku8.github.io/Website-Light-OFF-ON/',
+      featured: false
+    },
+    {
+      title: 'Begginer-HTML-CSS-JS-GAME',
+      description: 'Simple browser-based game demonstrating core web technologies. Features basic interactivity and score tracking.',
+      image: Game,
+      technologies: ['js', 'HTML', 'CSS'],
+      liveUrl: 'https://wanjiku8.github.io/Begginer-HTML-CSS-JS-GAME/',
+      featured: false
+    },
+    {
+      title: 'Portfolio Website',
+      description: 'Personal portfolio showcasing projects and skills. Responsive design with smooth animations and dark mode support.',
+      image: ProjectFive,
+      technologies: ['Python', 'React', 'CSS'],
+      liveUrl: 'https://wanjiku8.github.io/Portfolio-Wanjiku-Faith/',
+      featured: true
+    },
+    {
+      title: 'The Animal Soundboard',
+      description: 'Interactive soundboard featuring animal noises. Educational tool for children with colorful UI and simple controls.',
+      image: ProjectSeven,
+      technologies: ['Python','React', 'Flask'],
+      liveUrl: 'https://wanjiku8.github.io/Final-Project/',
+      featured: true
+    },
+    {
+      title: 'Movie js Application',
+      description: 'Movie database browser with search functionality. Displays film details and ratings from a curated collection.',
+      image: ProjectEight,
+      technologies: ['js', 'Html5/Css', 'Bootstrap'],
+      liveUrl: 'https://wanjiku8.github.io/mv/',
+      featured: false
+    }
+  ];
 
   // Calculate pagination
   const indexOfLastProject = currentPage * projectsPerPage;
@@ -241,7 +245,7 @@ const projects = [
 
   const footerStyle = {
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'left', // Changed from 'space-between' to 'center'
     flexDirection: windowWidth < 480 ? 'column' : 'row',
     gap: windowWidth < 480 ? '0.5rem' : '0'
   };
@@ -339,9 +343,6 @@ const projects = [
                   <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" style={buttonStyle}>
                     <ExternalLink size={16} />
                   </a>
-                  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" style={buttonStyle}>
-                    <Github size={16} />
-                  </a>
                 </div>
               </div>
               
@@ -375,10 +376,6 @@ const projects = [
                   <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" style={linkButtonStyle}>
                     <ExternalLink size={windowWidth < 768 ? 14 : 16} />
                     Live Demo
-                  </a>
-                  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" style={linkButtonStyle}>
-                    <Github size={windowWidth < 768 ? 14 : 16} />
-                    Source Code
                   </a>
                 </div>
               </div>

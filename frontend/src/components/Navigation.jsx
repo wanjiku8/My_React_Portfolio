@@ -15,7 +15,6 @@ const Navigation = () => {
 
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
-      // Close menu when switching to desktop view
       if (window.innerWidth >= 768) {
         setIsMenuOpen(false);
       }
@@ -69,7 +68,8 @@ const Navigation = () => {
     fontWeight: 'bold',
     background: 'linear-gradient(45deg, #8B4513, #D2691E)',
     WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent'
+    WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text'
   };
 
   const navLinksContainerStyle = {
@@ -82,12 +82,17 @@ const Navigation = () => {
     color: '#333',
     textDecoration: 'none',
     fontWeight: '500',
-    fontSize: '0.9rem'
+    fontSize: '0.9rem',
+    transition: 'color 0.2s ease',
+    ':hover': {
+      color: '#8B4513'
+    }
   };
 
   const socialLinksStyle = {
     display: windowWidth >= 768 ? 'flex' : 'none',
-    gap: '1rem'
+    gap: '1rem',
+    alignItems: 'center'
   };
 
   const buttonStyle = {
@@ -99,47 +104,49 @@ const Navigation = () => {
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
-    gap: '0.5rem'
+    gap: '0.5rem',
+    transition: 'background-color 0.2s ease',
+    ':hover': {
+      backgroundColor: '#6B3A10'
+    }
   };
 
   const mobileMenuButtonStyle = {
     display: windowWidth < 768 ? 'block' : 'none',
     background: 'none',
     border: 'none',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    color: '#8B4513'
   };
 
   const mobileMenuStyle = {
-    display: isMenuOpen ? 'block' : 'none',
+    display: isMenuOpen ? 'flex' : 'none',
+    flexDirection: 'column',
     position: 'absolute',
     top: '100%',
     left: 0,
     right: 0,
-    background: 'rgba(139, 69, 19, 0.85)', // Semi-transparent brown
+    background: 'rgba(255, 255, 255, 0.98)',
     backdropFilter: 'blur(12px)',
     padding: '1.5rem',
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
     zIndex: 40,
     borderRadius: '0 0 12px 12px',
-    borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-    animation: isMenuOpen ? 'fadeIn 0.3s ease-out' : 'none',
-    '@keyframes fadeIn': {
-      from: { opacity: 0, transform: 'translateY(-10px)' },
-      to: { opacity: 1, transform: 'translateY(0)' }
-    }
+    borderTop: '1px solid rgba(0, 0, 0, 0.1)',
+    animation: isMenuOpen ? 'fadeIn 0.3s ease-out' : 'none'
   };
 
   const mobileNavItemStyle = {
     padding: '0.75rem 0',
-    color: '#fff',
+    color: '#333',
     textDecoration: 'none',
     display: 'block',
     fontWeight: '500',
     fontSize: '1rem',
     transition: 'all 0.2s ease',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+    borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
     ':hover': {
-      color: '#FFD700',
+      color: '#8B4513',
       paddingLeft: '8px'
     }
   };
@@ -150,29 +157,22 @@ const Navigation = () => {
     gap: '1.5rem',
     marginTop: '1.5rem',
     paddingTop: '1rem',
-    borderTop: '1px solid rgba(255, 255, 255, 0.1)'
+    borderTop: '1px solid rgba(0, 0, 0, 0.05)'
   };
 
   const mobileButtonStyle = {
     ...buttonStyle,
     width: '100%',
     marginTop: '1.5rem',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-    ':hover': {
-      backgroundColor: 'rgba(255, 255, 255, 0.2)'
-    }
+    justifyContent: 'center'
   };
 
   return (
     <nav style={navStyle}>
       <div style={containerStyle}>
         <div style={navContentStyle}>
-          {/* Logo */}
           <h1 style={logoStyle}>Faith Wanjiku</h1>
 
-          {/* Desktop Nav Links */}
           <div style={navLinksContainerStyle}>
             {navItems.map(item => (
               <a key={item.name} href={item.href} style={navLinkStyle}>
@@ -181,20 +181,32 @@ const Navigation = () => {
             ))}
           </div>
 
-          {/* Desktop Socials + Button */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <div style={socialLinksStyle}>
-               <a href="https://github.com"><Github size={20} color="#8a552d" /></a>
-            <a href="https://linkedin.com"><Linkedin size={20} color="#8a552d" /></a>
-            <a href="mailto:dev@example.com"><Mail size={20} color="#8a552d" /></a>
+              <a href="https://github.com/wanjiku8" aria-label="GitHub">
+                <Github size={20} color="#8B4513" />
+              </a>
+              <a href="https://www.linkedin.com/in/wanjiku-faith-637094272/" aria-label="LinkedIn">
+                <Linkedin size={20} color="#8B4513" />
+              </a>
+              <a href="mailto:Wanjikuf141@gmail.com" aria-label="Email">
+                <Mail size={20} color="#8B4513" />
+              </a>
             </div>
-            <button style={buttonStyle}>
-              <Download size={16} />
-              {windowWidth > 768 ? 'Resume' : 'CV'}
-            </button>
+            <a 
+              href="https://docs.google.com/document/d/17bclhrdKt-5k9ad0aBIxi5ynwaqyrkGY89nRKlLujmc/export?format=pdf" 
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: 'none' }}
+              download="Faith_Wanjiku_Resume.pdf"
+            >
+              <button style={buttonStyle}>
+                <Download size={16} />
+                {windowWidth > 768 ? 'Resume' : 'CV'}
+              </button>
+            </a>
           </div>
 
-          {/* Hamburger for Mobile */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             style={mobileMenuButtonStyle}
@@ -205,26 +217,42 @@ const Navigation = () => {
         </div>
 
         {/* Mobile Menu */}
-        <div style={mobileMenuStyle}>
-          {navItems.map(item => (
-            <a
-              key={item.name}
-              href={item.href}
-              style={mobileNavItemStyle}
-              onClick={() => setIsMenuOpen(false)}
+        {isMenuOpen && (
+          <div style={mobileMenuStyle}>
+            {navItems.map(item => (
+              <a
+                key={item.name}
+                href={item.href}
+                style={mobileNavItemStyle}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {item.name}
+              </a>
+            ))}
+            <div style={mobileSocialLinksStyle}>
+              <a href="https://github.com/wanjiku8" aria-label="GitHub">
+                <Github size={20} color="#8B4513" />
+              </a>
+              <a href="https://www.linkedin.com/in/wanjiku-faith-637094272/" aria-label="LinkedIn">
+                <Linkedin size={20} color="#8B4513" />
+              </a>
+              <a href="mailto:Wanjikuf141@gmail.com" aria-label="Email">
+                <Mail size={20} color="#8B4513" />
+              </a>
+            </div>
+            <a 
+              href="https://docs.google.com/document/d/17bclhrdKt-5k9ad0aBIxi5ynwaqyrkGY89nRKlLujmc/export?format=pdf" 
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: 'none' }}
+              download="Faith_Wanjiku_Resume.pdf"
             >
-              {item.name}
+              <button style={mobileButtonStyle}>
+                <Download size={16} /> Resume
+              </button>
             </a>
-          ))}
-          <div style={mobileSocialLinksStyle}>
-            <a href="https://github.com"><Github size={20} color="#fff" /></a>
-            <a href="https://linkedin.com"><Linkedin size={20} color="#fff" /></a>
-            <a href="mailto:dev@example.com"><Mail size={20} color="#fff" /></a>
           </div>
-          <button style={mobileButtonStyle}>
-            <Download size={16} color="#fff" /> Download Resume
-          </button>
-        </div>
+        )}
       </div>
     </nav>
   );
