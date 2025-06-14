@@ -69,18 +69,13 @@ const Contact = () => {
       }
 
       // Try to parse successful response
-      try {
-        const data = await response.json();
-        // Reset form on success
-        setFormData({ name: '', email: '', subject: '', message: '' });
-        setFormErrors({});
-        setSubmitSuccess(true);
-      } catch (jsonError) {
-        // If JSON parsing fails but response was OK, still consider it a success
-        setFormData({ name: '', email: '', subject: '', message: '' });
-        setFormErrors({});
-        setSubmitSuccess(true);
-      }
+      const data = await response.json();
+      
+      // Reset form on success
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setFormErrors({});
+      setSubmitSuccess(true);
+      console.log('Form submitted successfully:', data);
     } catch (error) {
       console.error('Error submitting form:', error);
       setServerError(error.message || 'An error occurred while submitting your message. Please try again.');
@@ -188,7 +183,8 @@ const Contact = () => {
       color: '#6B5B73',
       textDecoration: 'none',
       fontSize: windowWidth > 768 ? '1rem' : '0.9375rem',
-      '&:hover': {
+      transition: 'color 0.2s ease',
+      ':hover': {
         color: '#8B4513'
       }
     },
@@ -229,7 +225,12 @@ const Contact = () => {
       borderRadius: '0.375rem',
       border: formErrors.name || formErrors.email ? '1px solid #ef4444' : '1px solid #d1d5db',
       fontSize: '1rem',
-      outline: 'none'
+      outline: 'none',
+      transition: 'border-color 0.2s ease',
+      ':focus': {
+        borderColor: '#8B4513',
+        boxShadow: '0 0 0 2px rgba(139, 69, 19, 0.2)'
+      }
     },
     textarea: {
       width: '100%',
@@ -238,7 +239,12 @@ const Contact = () => {
       border: formErrors.message ? '1px solid #ef4444' : '1px solid #d1d5db',
       fontSize: '1rem',
       minHeight: '8rem',
-      resize: 'vertical'
+      resize: 'vertical',
+      transition: 'border-color 0.2s ease',
+      ':focus': {
+        borderColor: '#8B4513',
+        boxShadow: '0 0 0 2px rgba(139, 69, 19, 0.2)'
+      }
     },
     submitButton: {
       backgroundColor: isSubmitting ? '#6B3A10' : '#8B4513',
@@ -253,7 +259,11 @@ const Contact = () => {
       alignItems: 'center',
       justifyContent: 'center',
       gap: '0.5rem',
-      width: windowWidth < 768 ? '100%' : 'auto'
+      width: windowWidth < 768 ? '100%' : 'auto',
+      transition: 'background-color 0.2s ease',
+      ':hover': {
+        backgroundColor: isSubmitting ? '#6B3A10' : '#A0522D'
+      }
     },
     errorText: {
       color: '#ef4444',
