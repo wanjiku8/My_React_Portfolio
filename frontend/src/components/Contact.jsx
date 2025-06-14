@@ -12,6 +12,7 @@ const Contact = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [formErrors, setFormErrors] = useState({});
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [serverError, setServerError] = useState('');
 
   // Handle window resizing
   useEffect(() => {
@@ -37,6 +38,7 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setServerError('');
     
     if (!validateForm()) {
       return;
@@ -54,19 +56,34 @@ const Contact = () => {
         body: JSON.stringify(formData)
       });
 
-      const data = await response.json();
-
+      // First check if response is OK (status 200-299)
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to send message. Please try again later.');
+        // Try to parse error response as JSON, fallback to text if that fails
+        try {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to send message');
+        } catch (jsonError) {
+          const errorText = await response.text();
+          throw new Error(errorText || 'Failed to send message');
+        }
       }
 
-      // Reset form on success
-      setFormData({ name: '', email: '', subject: '', message: '' });
-      setFormErrors({});
-      setSubmitSuccess(true);
+      // Try to parse successful response
+      try {
+        const data = await response.json();
+        // Reset form on success
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        setFormErrors({});
+        setSubmitSuccess(true);
+      } catch (jsonError) {
+        // If JSON parsing fails but response was OK, still consider it a success
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        setFormErrors({});
+        setSubmitSuccess(true);
+      }
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert(error.message || 'An error occurred while submitting your message. Please try again.');
+      setServerError(error.message || 'An error occurred while submitting your message. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -102,7 +119,6 @@ const Contact = () => {
     }
   ];
 
-  // Styles (same as before)
   const styles = {
     section: {
       padding: windowWidth > 768 ? '5rem 0' : '3rem 0',
@@ -251,6 +267,14 @@ const Contact = () => {
       borderRadius: '0.375rem',
       marginBottom: '1rem',
       textAlign: 'center'
+    },
+    errorMessage: {
+      color: '#ef4444',
+      backgroundColor: '#fef2f2',
+      padding: '1rem',
+      borderRadius: '0.375rem',
+      marginBottom: '1rem',
+      textAlign: 'center'
     }
   };
 
@@ -290,6 +314,11 @@ const Contact = () => {
             {submitSuccess && (
               <div style={styles.successMessage}>
                 Thank you! Your message has been sent successfully.
+              </div>
+            )}
+            {serverError && (
+              <div style={styles.errorMessage}>
+                {serverError}
               </div>
             )}
             <form onSubmit={handleSubmit} style={styles.form}>
