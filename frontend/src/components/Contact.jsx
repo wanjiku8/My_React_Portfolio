@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 
-// Vite environment variables
-const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -14,82 +10,75 @@ const Contact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  // Load reCAPTCHA and setup resize listener
+  // Handle window resizing
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
-
-    const loadRecaptcha = () => {
-      if (!RECAPTCHA_SITE_KEY) {
-        console.error('reCAPTCHA site key is missing');
-        return;
-      }
-
-      const script = document.createElement('script');
-      script.src = `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`;
-      script.async = true;
-      script.onload = () => setRecaptchaLoaded(true);
-      document.body.appendChild(script);
-
-      return () => {
-        window.removeEventListener('resize', handleResize);
-        document.body.removeChild(script);
-      };
-    };
-
-    loadRecaptcha();
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.name.trim()) errors.name = 'Name is required';
+    if (!formData.email.trim()) {
+      errors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'Please enter a valid email';
+    }
+    if (!formData.subject.trim()) errors.subject = 'Subject is required';
+    if (!formData.message.trim()) errors.message = 'Message is required';
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!recaptchaLoaded) {
-      alert('Security verification is loading. Please try again in a moment.');
+    if (!validateForm()) {
       return;
     }
 
     setIsSubmitting(true);
+    setSubmitSuccess(false);
 
     try {
-      // Get reCAPTCHA token
-      const token = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { 
-        action: 'contact' 
-      });
-
-      const response = await fetch(`${BACKEND_URL}/api/contact`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/contact`, {
         method: 'POST',
-        headers: {
+        headers: { 
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          recaptchaToken: token
-        })
+        body: JSON.stringify(formData)
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to send message');
+        throw new Error(data.error || 'Failed to send message. Please try again later.');
       }
 
-      alert('Thank you! Your message has been sent successfully.');
+      // Reset form on success
       setFormData({ name: '', email: '', subject: '', message: '' });
+      setFormErrors({});
+      setSubmitSuccess(true);
     } catch (error) {
-      console.error('Submission error:', error);
-      alert(error.message || 'There was an error sending your message. Please try again later.');
+      console.error('Error submitting form:', error);
+      alert(error.message || 'An error occurred while submitting your message. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleChange = (e) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error when user starts typing
+    if (formErrors[name]) {
+      setFormErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
   const contactInfo = [
@@ -113,7 +102,7 @@ const Contact = () => {
     }
   ];
 
-  // Responsive styles
+  // Styles (same as before)
   const styles = {
     section: {
       padding: windowWidth > 768 ? '5rem 0' : '3rem 0',
@@ -131,10 +120,7 @@ const Contact = () => {
     title: {
       fontSize: windowWidth > 768 ? '2.5rem' : '2rem',
       fontWeight: 'bold',
-      background: 'transparent',
-      WebkitBackgroundClip: 'text',
       color: '#D2691E',
-      WebkitTextFillColor: '#D2691E',
       marginBottom: '1rem'
     },
     subtitle: {
@@ -174,8 +160,7 @@ const Contact = () => {
       borderRadius: '0.5rem',
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0
+      justifyContent: 'center'
     },
     contactLabel: {
       fontWeight: '500',
@@ -186,9 +171,8 @@ const Contact = () => {
     contactValue: {
       color: '#6B5B73',
       textDecoration: 'none',
-      transition: 'color 0.3s ease',
       fontSize: windowWidth > 768 ? '1rem' : '0.9375rem',
-      ':hover': {
+      '&:hover': {
         color: '#8B4513'
       }
     },
@@ -227,28 +211,18 @@ const Contact = () => {
       width: '100%',
       padding: '0.75rem',
       borderRadius: '0.375rem',
-      border: '1px solid #d1d5db',
+      border: formErrors.name || formErrors.email ? '1px solid #ef4444' : '1px solid #d1d5db',
       fontSize: '1rem',
-      outline: 'none',
-      transition: 'border-color 0.3s ease',
-      ':focus': {
-        borderColor: '#8B4513',
-        boxShadow: '0 0 0 2px rgba(139, 69, 19, 0.2)'
-      }
+      outline: 'none'
     },
     textarea: {
       width: '100%',
       padding: '0.75rem',
       borderRadius: '0.375rem',
-      border: '1px solid #d1d5db',
+      border: formErrors.message ? '1px solid #ef4444' : '1px solid #d1d5db',
       fontSize: '1rem',
       minHeight: '8rem',
-      resize: 'vertical',
-      transition: 'border-color 0.3s ease',
-      ':focus': {
-        borderColor: '#8B4513',
-        boxShadow: '0 0 0 2px rgba(139, 69, 19, 0.2)'
-      }
+      resize: 'vertical'
     },
     submitButton: {
       backgroundColor: isSubmitting ? '#6B3A10' : '#8B4513',
@@ -263,11 +237,20 @@ const Contact = () => {
       alignItems: 'center',
       justifyContent: 'center',
       gap: '0.5rem',
-      width: windowWidth < 768 ? '100%' : 'auto',
-      transition: 'background-color 0.3s ease',
-      ':hover': {
-        backgroundColor: isSubmitting ? '#6B3A10' : '#6B3A10'
-      }
+      width: windowWidth < 768 ? '100%' : 'auto'
+    },
+    errorText: {
+      color: '#ef4444',
+      fontSize: '0.875rem',
+      marginTop: '0.25rem'
+    },
+    successMessage: {
+      color: '#16a34a',
+      backgroundColor: '#f0fdf4',
+      padding: '1rem',
+      borderRadius: '0.375rem',
+      marginBottom: '1rem',
+      textAlign: 'center'
     }
   };
 
@@ -287,7 +270,6 @@ const Contact = () => {
             <p style={styles.connectDesc}>
               I'm always excited to discuss new opportunities — freelance projects, full-time positions or collaborations!
             </p>
-
             {contactInfo.map((item, index) => (
               <div key={index} style={styles.contactItem}>
                 <div style={styles.iconContainer}>
@@ -295,12 +277,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <p style={styles.contactLabel}>{item.label}</p>
-                  <a 
-                    href={item.href}
-                    style={styles.contactValue}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <a href={item.href} style={styles.contactValue} target="_blank" rel="noopener noreferrer">
                     {item.value}
                   </a>
                 </div>
@@ -310,6 +287,11 @@ const Contact = () => {
 
           <div style={styles.card}>
             <h3 style={styles.formTitle}>Send a Message</h3>
+            {submitSuccess && (
+              <div style={styles.successMessage}>
+                Thank you! Your message has been sent successfully.
+              </div>
+            )}
             <form onSubmit={handleSubmit} style={styles.form}>
               <div style={styles.formGroup}>
                 <div style={{ width: '100%' }}>
@@ -324,6 +306,7 @@ const Contact = () => {
                     placeholder="Your name"
                     style={styles.input}
                   />
+                  {formErrors.name && <p style={styles.errorText}>{formErrors.name}</p>}
                 </div>
                 <div style={{ width: '100%' }}>
                   <label htmlFor="email" style={styles.label}>Email *</label>
@@ -337,6 +320,7 @@ const Contact = () => {
                     placeholder="your@email.com"
                     style={styles.input}
                   />
+                  {formErrors.email && <p style={styles.errorText}>{formErrors.email}</p>}
                 </div>
               </div>
 
@@ -352,6 +336,7 @@ const Contact = () => {
                   placeholder="Subject of your message"
                   style={styles.input}
                 />
+                {formErrors.subject && <p style={styles.errorText}>{formErrors.subject}</p>}
               </div>
 
               <div>
@@ -365,20 +350,15 @@ const Contact = () => {
                   placeholder="Your message here..."
                   style={styles.textarea}
                 />
+                {formErrors.message && <p style={styles.errorText}>{formErrors.message}</p>}
               </div>
 
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 style={styles.submitButton}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? (
-                  'Sending...'
-                ) : (
-                  <>
-                    <Send size={18} /> Send Message
-                  </>
-                )}
+                {isSubmitting ? 'Sending...' : <><Send size={18} /> Send Message</>}
               </button>
             </form>
           </div>
