@@ -14,10 +14,9 @@ const Footer = () => {
   }, []);
 
   const socialLinks = [
-    { icon: Github, href: 'https://github.com', label: 'GitHub' },
-    { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
-    { icon: Twitter, href: 'https://twitter.com', label: 'Twitter' },
-    { icon: Mail, href: 'mailto:faith@developer.com', label: 'Email' }
+    { icon: Github, href: 'https://github.com/wanjiku8.com', label: 'GitHub' },
+    { icon: Linkedin, href: 'https://www.linkedin.com/in/wanjiku-faith-637094272/', label: 'LinkedIn' },
+    { icon: Mail, href: 'wanjikuf141@gmail.com', label: 'Email' }
   ];
 
   const quickLinks = [
@@ -211,7 +210,6 @@ const Footer = () => {
               <li style={serviceItemStyle}>Mobile Apps</li>
               <li style={serviceItemStyle}>API Development</li>
               <li style={serviceItemStyle}>UI/UX Design</li>
-              <li style={serviceItemStyle}>Consulting</li>
             </ul>
           </div>
         </div>
@@ -222,7 +220,7 @@ const Footer = () => {
             © {currentYear} Faith Wanjiku. All rights reserved.
           </p>
           <p style={madeWithStyle}>
-            Made with <Heart size={16} style={{ color: '#ef4444' }} /> by Faith Wanjiku
+            Made by Faith Wanjiku
           </p>
         </div>
       </div>

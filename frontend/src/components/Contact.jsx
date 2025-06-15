@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 
+// Vite environment variables
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -8,23 +12,77 @@ const Contact = () => {
     subject: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
 
-  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
-
+  // Load reCAPTCHA and setup resize listener
   useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+
+    const loadRecaptcha = () => {
+      if (!RECAPTCHA_SITE_KEY) {
+        console.error('reCAPTCHA site key is missing');
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`;
+      script.async = true;
+      script.onload = () => setRecaptchaLoaded(true);
+      document.body.appendChild(script);
+
+      return () => {
+        window.removeEventListener('resize', handleResize);
+        document.body.removeChild(script);
+      };
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    loadRecaptcha();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert('Thank you for your message. I\'ll get back to you soon!');
-    setFormData({ name: '', email: '', subject: '', message: '' });
+    
+    if (!recaptchaLoaded) {
+      alert('Security verification is loading. Please try again in a moment.');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Get reCAPTCHA token
+      const token = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { 
+        action: 'contact' 
+      });
+
+      const response = await fetch(`${BACKEND_URL}/api/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          recaptchaToken: token
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send message');
+      }
+
+      alert('Thank you! Your message has been sent successfully.');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (error) {
+      console.error('Submission error:', error);
+      alert(error.message || 'There was an error sending your message. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -44,18 +102,18 @@ const Contact = () => {
     {
       icon: Phone,
       label: 'Phone',
-      value: '0112580258',
-      href: 'tel:0112580258'
+      value: '+254 112 580 258',
+      href: 'tel:+254112580258'
     },
     {
       icon: MapPin,
       label: 'Location',
       value: 'Nairobi, Kenya',
-      href: '#'
+      href: 'https://maps.google.com/?q=Nairobi,Kenya'
     }
   ];
 
-  // Responsive CSS-in-JS styles
+  // Responsive styles
   const styles = {
     section: {
       padding: windowWidth > 768 ? '5rem 0' : '3rem 0',
@@ -73,10 +131,10 @@ const Contact = () => {
     title: {
       fontSize: windowWidth > 768 ? '2.5rem' : '2rem',
       fontWeight: 'bold',
-      background: 'trensparent',
+      background: 'transparent',
       WebkitBackgroundClip: 'text',
-      color: ' #D2691E',
-      WebkitTextFillColor: ' #D2691E',
+      color: '#D2691E',
+      WebkitTextFillColor: '#D2691E',
       marginBottom: '1rem'
     },
     subtitle: {
@@ -129,14 +187,18 @@ const Contact = () => {
       color: '#6B5B73',
       textDecoration: 'none',
       transition: 'color 0.3s ease',
-      fontSize: windowWidth > 768 ? '1rem' : '0.9375rem'
+      fontSize: windowWidth > 768 ? '1rem' : '0.9375rem',
+      ':hover': {
+        color: '#8B4513'
+      }
     },
     card: {
       backgroundColor: 'white',
       borderRadius: '0.5rem',
       padding: windowWidth > 768 ? '2rem' : '1.5rem',
       boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-      marginTop: windowWidth >= 1024 ? '0' : '1rem'
+      marginTop: windowWidth >= 1024 ? '0' : '1rem',
+      width: '100%'
     },
     formTitle: {
       fontSize: windowWidth > 768 ? '1.25rem' : '1.1rem',
@@ -167,7 +229,12 @@ const Contact = () => {
       borderRadius: '0.375rem',
       border: '1px solid #d1d5db',
       fontSize: '1rem',
-      outline: 'none'
+      outline: 'none',
+      transition: 'border-color 0.3s ease',
+      ':focus': {
+        borderColor: '#8B4513',
+        boxShadow: '0 0 0 2px rgba(139, 69, 19, 0.2)'
+      }
     },
     textarea: {
       width: '100%',
@@ -176,22 +243,31 @@ const Contact = () => {
       border: '1px solid #d1d5db',
       fontSize: '1rem',
       minHeight: '8rem',
-      resize: 'vertical'
+      resize: 'vertical',
+      transition: 'border-color 0.3s ease',
+      ':focus': {
+        borderColor: '#8B4513',
+        boxShadow: '0 0 0 2px rgba(139, 69, 19, 0.2)'
+      }
     },
     submitButton: {
-      backgroundColor: '#8B4513',
+      backgroundColor: isSubmitting ? '#6B3A10' : '#8B4513',
       color: 'white',
       padding: '0.75rem 1.5rem',
       borderRadius: '0.375rem',
       border: 'none',
       fontSize: '1rem',
       fontWeight: '500',
-      cursor: 'pointer',
+      cursor: isSubmitting ? 'not-allowed' : 'pointer',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       gap: '0.5rem',
-      width: windowWidth < 768 ? '100%' : 'auto'
+      width: windowWidth < 768 ? '100%' : 'auto',
+      transition: 'background-color 0.3s ease',
+      ':hover': {
+        backgroundColor: isSubmitting ? '#6B3A10' : '#6B3A10'
+      }
     }
   };
 
@@ -222,8 +298,8 @@ const Contact = () => {
                   <a 
                     href={item.href}
                     style={styles.contactValue}
-                    onMouseOver={(e) => e.target.style.color = '#8B4513'}
-                    onMouseOut={(e) => e.target.style.color = '#6B5B73'}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     {item.value}
                   </a>
@@ -241,10 +317,11 @@ const Contact = () => {
                   <input
                     id="name"
                     name="name"
+                    type="text"
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    placeholder="Your full name"
+                    placeholder="Your name"
                     style={styles.input}
                   />
                 </div>
@@ -268,10 +345,11 @@ const Contact = () => {
                 <input
                   id="subject"
                   name="subject"
+                  type="text"
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  placeholder="What's this about?"
+                  placeholder="Subject of your message"
                   style={styles.input}
                 />
               </div>
@@ -289,8 +367,18 @@ const Contact = () => {
                 />
               </div>
 
-              <button type="submit" style={styles.submitButton}>
-                <Send size={18} /> Send Message
+              <button 
+                type="submit" 
+                style={styles.submitButton}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  'Sending...'
+                ) : (
+                  <>
+                    <Send size={18} /> Send Message
+                  </>
+                )}
               </button>
             </form>
           </div>

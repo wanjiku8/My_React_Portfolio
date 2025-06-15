@@ -4,7 +4,7 @@ import { Users, Award, Coffee, Lightbulb } from 'lucide-react';
 const About = () => {
   const stats = [
     { icon: Users, label: 'Happy Clients', value: '20+' },
-    { icon: Award, label: 'Projects Completed', value: '50+' },
+    { icon: Award, label: 'Projects Completed', value: '30+' },
     { icon: Coffee, label: 'Cups of Coffee', value: '1000+' },
     { icon: Lightbulb, label: 'Ideas Realized', value: '20+' }
   ];
@@ -137,7 +137,7 @@ const About = () => {
         <div style={headerStyle}>
           <h2 style={titleStyle}>About Me</h2>
           <p style={subtitleStyle}>
-            Passionate fullstack developer with 2 years of experience building scalable web applications
+            Passionate fullstack developer with 2+ years of experience building scalable web applications
           </p>
         </div>
 
